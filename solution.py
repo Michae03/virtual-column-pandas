@@ -5,7 +5,7 @@ def add_virtual_column(df: pandas.DataFrame, role: str, new_column: str) -> pand
 
    valid_column = re.compile(r'^[A-Za-z_]+$')
    valid_operators = ['+', '-', '*']
-   valid_role = re.compile('^[A-Za-z_\s+\-*]+$')
+   valid_role = re.compile(r'^[A-Za-z_\s\+\-\*]+$')
 
 
    #validate df
@@ -28,5 +28,11 @@ def add_virtual_column(df: pandas.DataFrame, role: str, new_column: str) -> pand
    if not valid_column.fullmatch(new_column):
       return pandas.DataFrame([])
 
+   try:
+      new_df = df.copy()
+      new_df[new_column] = df.eval(role)
+      return new_df
+   except Exception:
+      return pandas.DataFrame([])
 
    return pandas.DataFrame([])
